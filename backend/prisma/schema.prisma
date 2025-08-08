@@ -12,40 +12,29 @@ model Service {
   id          Int      @id @default(autoincrement())
   name        String
   description String?
-  basePrice   Int      // in cents
-  options     Json?    // e.g. tint percentages/pricing adjustments
+  basePrice   Int
+  // Store JSON as string for SQLite compatibility
+  options     String?   // JSON string
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   bookings    Booking[]
 }
 
 model Booking {
-  id          Int      @id @default(autoincrement())
-  name        String
-  phone       String
-  email       String?
-  vehicle     String
-  windows     String
-  notes       String?
-  date        DateTime // date with time set to slot start in UTC
-  serviceId   Int
-  service     Service  @relation(fields: [serviceId], references: [id])
-  status      BookingStatus @default(PENDING)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  email     String?
+  vehicle   String
+  windows   String
+  notes     String?
+  date      DateTime
+  serviceId Int
+  service   Service  @relation(fields: [serviceId], references: [id])
+  // Use string instead of enum for SQLite compatibility
+  status    String   @default("PENDING")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([date])
-}
-
-model Blackout {
-  id        Int      @id @default(autoincrement())
-  date      DateTime // full-day blackout (local date start)
-  reason    String?
-  createdAt DateTime @default(now())
-}
-
-enum BookingStatus {
-  PENDING
-  CONFIRMED
-  CANCELLED
 }
