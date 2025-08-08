@@ -1,6 +1,5 @@
 import 'dotenv/config'
 import { PrismaClient } from '@prisma/client'
-
 const prisma = new PrismaClient()
 
 async function main() {
@@ -18,7 +17,6 @@ async function main() {
       options: JSON.stringify({ percents: [5, 15, 20, 35, 50] })
     }
   ]
-
   for (const s of services) {
     await prisma.service.upsert({
       where: { name: s.name },
@@ -28,7 +26,6 @@ async function main() {
   }
   console.log('Seeded services.')
 }
-
-main()
-  .then(async () => { await prisma.$disconnect() })
-  .catch(async (e) => { console.error(e); await prisma.$disconnect(); process.exit(1) })
+main().then(()=>prisma.$disconnect()).catch(async e => {
+  console.error(e); await prisma.$disconnect(); process.exit(1)
+})
