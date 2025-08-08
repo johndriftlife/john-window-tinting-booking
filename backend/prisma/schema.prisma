@@ -8,14 +8,15 @@ datasource db {
 
 model Service {
   id          Int      @id @default(autoincrement())
-  name        String
+  name        String   @unique   // <-- add @unique
   description String?
   basePrice   Int
-  options     String?   // store JSON as string
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  options     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
   bookings    Booking[]
 }
+
 
 model Booking {
   id        Int      @id @default(autoincrement())
