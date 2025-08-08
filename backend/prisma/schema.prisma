@@ -1,8 +1,6 @@
-// prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
 }
-
 datasource db {
   provider = "sqlite"
   url      = env("DATABASE_URL")
@@ -13,10 +11,9 @@ model Service {
   name        String
   description String?
   basePrice   Int
-  // Store JSON as string for SQLite compatibility
-  options     String?   // JSON string
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  options     String?   // store JSON as string
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
   bookings    Booking[]
 }
 
@@ -30,9 +27,8 @@ model Booking {
   notes     String?
   date      DateTime
   serviceId Int
-  service   Service  @relation(fields: [serviceId], references: [id])
-  // Use string instead of enum for SQLite compatibility
-  status    String   @default("PENDING")
+  service   Service @relation(fields: [serviceId], references: [id])
+  status    String  @default("PENDING") // was enum
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
