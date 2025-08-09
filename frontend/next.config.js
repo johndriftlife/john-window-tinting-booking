@@ -1,1 +1,7 @@
-/** @type {import('next').NextConfig} */\nmodule.exports={reactStrictMode:true,output:'export',images:{unoptimized:true}}\n
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  output: 'export',
+  images: { unoptimized: true }
+};
+module.exports = nextConfig;
