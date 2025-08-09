@@ -335,5 +335,22 @@ app.post('/api/stripe/webhook', bodyParser.raw({ type: 'application/json' }), as
     res.status(400).send(`Webhook Error: ${err.message}`)
   }
 })
+app.get("/admin-settings", (req, res) => {
+  res.status(200).send(`
+    <html>
+      <head><title>Admin Settings</title></head>
+      <body style="font-family: system-ui; padding: 24px;">
+        <h1>Admin Settings</h1>
+        <p>This is a simple placeholder page served by the API.</p>
+        <ul>
+          <li><a href="/api/services" target="_blank">View services (JSON)</a></li>
+          <li><a href="/api/windows/pricing" target="_blank">View pricing (JSON)</a></li>
+          <li><a href="/api/bookings" target="_blank">View bookings (JSON)</a></li>
+          <li><a href="/api/bookings.csv" target="_blank">Download bookings CSV</a></li>
+        </ul>
+      </body>
+    </html>
+  `);
+});
 
 app.listen(PORT, ()=> console.log(`API listening on :${PORT}`))
