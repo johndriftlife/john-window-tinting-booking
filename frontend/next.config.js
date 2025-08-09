@@ -1,0 +1,1 @@
+/** @type {import('next').NextConfig} */\nmodule.exports={reactStrictMode:true,output:'export',images:{unoptimized:true}}\n

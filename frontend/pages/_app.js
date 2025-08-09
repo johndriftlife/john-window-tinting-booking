@@ -1,0 +1,1 @@
+import '../styles/globals.css'\nexport default function App({Component,pageProps}){return <Component {...pageProps} />}\n
