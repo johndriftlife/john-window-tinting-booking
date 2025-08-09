@@ -87,3 +87,5 @@ module.exports = function adminSettingsRoute(app) {
     }
   });
 };
+const adminSettingsRoute = require('./admin-settings-route'); // adjust path if placed in src/
+adminSettingsRoute(app);
