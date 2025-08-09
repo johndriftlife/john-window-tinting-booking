@@ -30,3 +30,18 @@ p.muted{text-align:center;color:var(--muted);margin:0 0 20px}
 .slot{padding:10px 14px;border:1.8px solid var(--border);background:#111;color:var(--gold);border-radius:12px;cursor:pointer}
 .slot.active{box-shadow:0 0 0 3px rgba(211,47,47,0.35)}
 @media (max-width:640px){.row{grid-template-columns:1fr}}
+/* Bigger, centered logo with correct aspect */
+.logo{
+  display:block;
+  margin: 0 auto 20px;
+  background:#000;           /* black behind */
+  object-fit: contain;       /* keep proportions */
+  width:auto; 
+  height:auto;
+  max-width: 90vw;
+  max-height: 200px;         /* was small — try 200–240px */
+}
+
+@media (min-width: 768px){
+  .logo{ max-height: 240px; } /* desktop bump */
+}
