@@ -1,0 +1,48 @@
+
+body {
+  background-color: black;
+  font-family: Arial, sans-serif;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+h1 {
+  color: gold;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+input, select {
+  padding: 10px;
+  font-size: 16px;
+  border: 2px solid gold;
+  background-color: black;
+  color: gold;
+  border-radius: 5px;
+}
+label {
+  text-align: left;
+  color: white;
+  font-weight: bold;
+}
+button {
+  padding: 10px;
+  font-size: 16px;
+  background-color: gold;
+  color: black;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: red;
+  color: white;
+}
