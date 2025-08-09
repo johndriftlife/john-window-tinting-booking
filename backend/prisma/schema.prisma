@@ -1,0 +1,53 @@
+generator client { provider = "prisma-client-js" }
+datasource db { provider = "sqlite" url = env("DATABASE_URL") }
+
+model Service {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  basePrice   Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  bookings    Booking[]
+}
+
+model Booking {
+  id           Int      @id @default(autoincrement())
+  name         String
+  phone        String
+  brand        String?
+  model        String?
+  serviceId    Int
+  shades       String      // comma-separated
+  windowArea   String?     // comma-separated multi-select
+  date         String
+  time         String
+  status       String   @default("PENDING")
+  totalCents   Int?
+  depositCents Int?
+  currency     String?  // e.g., 'eur'
+  createdAt    DateTime @default(now())
+
+  service   Service  @relation(fields: [serviceId], references: [id])
+}
+
+model Config {
+  id        Int      @id @default(1)
+  data      String
+  updatedAt DateTime @updatedAt
+}
+
+model ServiceShade {
+  id        Int     @id @default(autoincrement())
+  serviceId Int
+  label     String
+  enabled   Boolean @default(true)
+
+  @@unique([serviceId, label])
+}
+
+model AdminSecret {
+  id        Int      @id @default(1)
+  keyHash   String
+  updatedAt DateTime @updatedAt
+}
