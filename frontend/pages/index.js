@@ -1,0 +1,1 @@
+export default function Home(){return(<div className='container'><img src='/logo.png' className='logo'/><h1>Book</h1></div>)}
