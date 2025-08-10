@@ -22,3 +22,16 @@
     "twilio": "5.2.3"
   }
 }
+
+{
+  "scripts": {
+    "build": "next build",
+    "start": "next start -p $PORT",
+    "db:push": "prisma db push",
+    "migrate:deploy": "prisma migrate deploy",
+    "seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
+}
