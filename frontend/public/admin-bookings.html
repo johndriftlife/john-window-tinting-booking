@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Bookings</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    table { width:100%; border-collapse: collapse; }
+    td, th { border: 1px solid #ddd; padding: 8px; }
+  </style>
+</head>
+<body>
+  <header><h1>Admin Bookings</h1><nav><a href="/">Back to booking</a></nav></header>
+  <main>
+    <div class="keybar">
+      <label>Admin key <input id="adminkey" placeholder="paste ADMIN_KEY" /></label>
+      <button id="savekey">Save</button>
+      <button id="load">Load</button>
+      <button id="export">Export CSV</button>
+    </div>
+    <table id="tbl">
+      <thead>
+        <tr>
+          <th>ID</th><th>Name</th><th>Phone</th><th>Service</th><th>Shade</th><th>Date</th><th>Time</th><th>Status</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p id="status"></p>
+  </main>
+  <script src="/js/common.js"></script>
+  <script>
+    const keyInput = document.getElementById('adminkey');
+    keyInput.value = localStorage.getItem('ADMIN_KEY') || '';
+    document.getElementById('savekey').onclick = () => {
+      localStorage.setItem('ADMIN_KEY', keyInput.value.trim());
+      alert('Saved');
+    };
+    document.getElementById('load').onclick = loadBookings;
+    document.getElementById('export').onclick = exportCSV;
+
+    async function loadBookings() {
+      const key = (keyInput.value || '').trim();
+      const res = await fetch('/api/admin/bookings?key=' + encodeURIComponent(key));
+      const out = document.getElementById('status');
+      if (!res.ok) {
+        out.textContent = 'Failed to load (check key)';
+        return;
+      }
+      const data = await res.json();
+      const tb = document.querySelector('#tbl tbody');
+      tb.innerHTML = data.bookings.map(b => `
+        <tr>
+          <td>${b.id}</td>
+          <td>${b.name}</td>
+          <td>${b.phone}</td>
+          <td>${b.serviceId}</td>
+          <td>${b.shadeId || ''}</td>
+          <td>${b.date}</td>
+          <td>${b.time}</td>
+          <td>${b.status}</td>
+        </tr>
+      `).join('');
+      out.textContent = `Loaded ${data.bookings.length} bookings`;
+    }
+
+    function exportCSV() {
+      const rows = Array.from(document.querySelectorAll('#tbl tr')).map(tr =>
+        Array.from(tr.children).map(td => `"${(td.textContent || '').replaceAll('"','""')}"`).join(',')
+      ).join('\n');
+      const blob = new Blob([rows], { type: 'text/csv' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'bookings.csv';
+      a.click();
+    }
+  </script>
+</body>
+</html>

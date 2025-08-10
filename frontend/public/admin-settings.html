@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin Settings</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <style>
+    .keybar { display:flex; gap:8px; align-items:center; margin-bottom:12px; }
+    textarea { width:100%; height:140px; }
+    .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
+  </style>
+</head>
+<body>
+  <header><h1>Admin Settings</h1><nav><a href="/">Back to booking</a></nav></header>
+  <main>
+    <div class="keybar">
+      <label>Admin key <input id="adminkey" placeholder="paste ADMIN_KEY" /></label>
+      <button id="savekey">Save</button>
+      <button id="load">Load Settings</button>
+    </div>
+
+    <section class="grid">
+      <div>
+        <h3>Services (JSON)</h3>
+        <textarea id="services"></textarea>
+      </div>
+      <div>
+        <h3>Shades (JSON)</h3>
+        <textarea id="shades"></textarea>
+      </div>
+      <div>
+        <h3>Business Hours (JSON)</h3>
+        <textarea id="hours"></textarea>
+      </div>
+      <div>
+        <h3>Slot Interval Minutes</h3>
+        <input id="interval" type="number" min="15" step="15" />
+      </div>
+    </section>
+
+    <button id="save">Save Settings</button>
+    <p id="status"></p>
+  </main>
+  <script src="/js/common.js"></script>
+  <script>
+    const keyInput = document.getElementById('adminkey');
+    keyInput.value = getKeyFromURL() || localStorage.getItem('ADMIN_KEY') || '';
+    document.getElementById('savekey').onclick = () => {
+      localStorage.setItem('ADMIN_KEY', keyInput.value.trim());
+      alert('Saved');
+    };
+    document.getElementById('load').onclick = loadSettings;
+    document.getElementById('save').onclick = saveSettings;
+
+    async function loadSettings() {
+      const key = (keyInput.value || '').trim();
+      const res = await fetch('/api/admin/settings?key=' + encodeURIComponent(key));
+      const out = document.getElementById('status');
+      if (!res.ok) {
+        out.textContent = 'Failed to load settings (check key)';
+        return;
+      }
+      const data = await res.json();
+      document.getElementById('services').value = JSON.stringify(data.services, null, 2);
+      document.getElementById('shades').value = JSON.stringify(data.shades, null, 2);
+      document.getElementById('hours').value = JSON.stringify(data.businessHours, null, 2);
+      document.getElementById('interval').value = data.slotIntervalMinutes || 60;
+      out.textContent = 'Loaded';
+    }
+
+    async function saveSettings() {
+      const key = (keyInput.value || '').trim();
+      const payload = {
+        services: JSON.parse(document.getElementById('services').value || '[]'),
+        shades: JSON.parse(document.getElementById('shades').value || '[]'),
+        businessHours: JSON.parse(document.getElementById('hours').value || '{}'),
+        slotIntervalMinutes: parseInt(document.getElementById('interval').value || '60', 10)
+      };
+      const res = await fetch('/api/admin/settings?key=' + encodeURIComponent(key), {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const out = document.getElementById('status');
+      if (!res.ok) {
+        out.textContent = 'Failed to save (check key)';
+        return;
+      }
+      out.textContent = 'Saved';
+    }
+
+    function getKeyFromURL() {
+      const p = new URLSearchParams(location.search);
+      return p.get('key');
+    }
+  </script>
+</body>
+</html>
